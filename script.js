@@ -7,6 +7,8 @@ const title = document.getElementById('title');
 const artist = document.getElementById('artist');
 const progressContainer = document.getElementById('progress-container');
 const progress = document.getElementById('progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
 
 //Music 
 const songs = [
@@ -89,10 +91,57 @@ function nextSong(){
 //Update Progress Bar & Time
 function updateProgressBar(e){
     if (isPlaying){
-        console.log(e)
-    }
-}
+        const {duration, currentTime} = e.srcElement;
 
+        //Update Progress bar 
+        const progressPercent = (currentTime/duration)*100;
+        progress.style.width = `${progressPercent}%`;
+        
+        //Calculate display for duration
+        const durationInMin = Math.floor(duration / 60);
+        // console.log('minutes', durationInMin);
+        let durationInSec = Math.floor(duration%60);
+        if (durationInSec < 10){
+            durationInSec = `0${durationInSec}`;
+        }
+        // console.log('durationInSec ',durationInSec );  
+
+        //Delay switching the duration element to avoid NaN.
+        if (durationInSec){
+            durationEl.textContent = `${durationInMin}:${durationInSec}`;
+        }
+
+        //Calculate display for CurrentTime
+        const currentTimeInMin = Math.floor(currentTime / 60);
+        // console.log('minutes', durationInMin);
+        let currentTimeInSec = Math.floor(currentTime%60);
+        if (currentTimeInSec < 10){
+            currentTimeInSec = `0${currentTimeInSec}`;
+        }
+
+        if (currentTimeInSec){
+            currentTimeEl.textContent = `${currentTimeInMin}:${currentTimeInSec}`;
+        }
+      }
+        
+    }       
+
+//Set Progress Bar : Seek functionality
+function setProgressBar(e){
+    const width = this.clientWidth;
+    console.log("With: ",width);
+    const clickX = e.offsetX;
+    console.log('clickX: ',clickX);
+    const { duration } = music;
+    //Seek percentage from the user click = clickX / width
+    //console.log(clickX/width);
+
+    //Jump duration = (clickX / width) * duration;
+     //console.log((clickX/width) * duration);
+
+     //Changing current time to the Jump duration.
+     music.currentTime = (clickX / width) * duration;
+}
 //Onload : Select first song
 loadSong(songs[songIndex]);
 
@@ -101,3 +150,5 @@ loadSong(songs[songIndex]);
 prevBtn.addEventListener('click', previousSong);
 nextBtn.addEventListener('click', nextSong);
 music.addEventListener('timeupdate', updateProgressBar);
+progressContainer.addEventListener('click', setProgressBar);
+music.addEventListener('ended', nextSong);
