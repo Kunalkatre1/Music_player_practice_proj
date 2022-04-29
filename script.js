@@ -126,6 +126,22 @@ function updateProgressBar(e){
         
     }       
 
+//Set Progress Bar : Seek functionality
+function setProgressBar(e){
+    const width = this.clientWidth;
+    console.log("With: ",width);
+    const clickX = e.offsetX;
+    console.log('clickX: ',clickX);
+    const { duration } = music;
+    //Seek percentage from the user click = clickX / width
+    //console.log(clickX/width);
+
+    //Jump duration = (clickX / width) * duration;
+     //console.log((clickX/width) * duration);
+
+     //Changing current time to the Jump duration.
+     music.currentTime = (clickX / width) * duration;
+}
 //Onload : Select first song
 loadSong(songs[songIndex]);
 
@@ -134,3 +150,4 @@ loadSong(songs[songIndex]);
 prevBtn.addEventListener('click', previousSong);
 nextBtn.addEventListener('click', nextSong);
 music.addEventListener('timeupdate', updateProgressBar);
+progressContainer.addEventListener('click', setProgressBar);
